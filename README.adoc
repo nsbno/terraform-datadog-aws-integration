@@ -1,0 +1,30 @@
+= DataDog Service
+:!toc-title:
+:!toc-placement:
+:toc:
+
+Set up a connection between a AWS Account and DataDog.
+
+toc::[]
+
+== Usage
+
+NOTE: Requires link:https://github.com/nsbno/terraform-datadog-provider-setup[`nsbno/terraform-datadog-provider`] module to be set up.
+[source, hcl]
+----
+module "datadog-service" {
+  source = "github.com/nsbno/terraform-datadog-aws-integration?ref=x.y.z"
+
+  # Should correspond to the name of the service in Datadog. Lowercase.
+  team_name   = "stasjon"
+  environment = var.environment
+}
+----
+
+== Relevant Repositories
+
+You can use these repos together with this repo!
+
+link:https://github.com/nsbno/terraform-datadog-provider-setup[`nsbno/terraform-datadog-provider`]::
+Set up a DataDog provider before using this module.
+

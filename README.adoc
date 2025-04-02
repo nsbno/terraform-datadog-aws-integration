@@ -10,13 +10,18 @@ toc::[]
 == Usage
 
 NOTE: Requires link:https://github.com/nsbno/terraform-datadog-provider-setup[`nsbno/terraform-datadog-provider`] module to be set up.
+
+
+Place this module in the environments in your `-aws` repository,
+and you will be good to go!
+
 [source, hcl]
 ----
 module "datadog-service" {
   source = "github.com/nsbno/terraform-datadog-aws-integration?ref=x.y.z"
 
   # Should correspond to the name of the team in Datadog. Lowercase.
-  team_name   = "stasjon"
+  team_name   = "utviklerplattform"
   environment = var.environment
 }
 ----

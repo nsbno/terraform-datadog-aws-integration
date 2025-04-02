@@ -1,9 +1,10 @@
-= DataDog Service
+= DataDog AWS Integration
 :!toc-title:
 :!toc-placement:
 :toc:
 
-Set up a connection between a AWS Account and DataDog.
+Set up a connection between an AWS Account and DataDog. With this you get more data from AWS, e.g. API GW metrics, SQS
+metrics, Aurora/DynamoDB statuses and more.
 
 toc::[]
 
@@ -12,8 +13,7 @@ toc::[]
 NOTE: Requires link:https://github.com/nsbno/terraform-datadog-provider-setup[`nsbno/terraform-datadog-provider`] module to be set up.
 
 
-Place this module in the environments in your `-aws` repository,
-and you will be good to go!
+Place this module in all environments in your `-aws` repository, and you will be good to go!
 
 [source, hcl]
 ----
@@ -21,7 +21,7 @@ module "datadog-service" {
   source = "github.com/nsbno/terraform-datadog-aws-integration?ref=x.y.z"
 
   # Should correspond to the name of the team in Datadog. Lowercase.
-  team_name   = "utviklerplattform"
+  team_name   = aws_ssm_parameter.team_name_handle.value
   environment = var.environment
 }
 ----

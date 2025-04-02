@@ -15,7 +15,7 @@ NOTE: Requires link:https://github.com/nsbno/terraform-datadog-provider-setup[`n
 module "datadog-service" {
   source = "github.com/nsbno/terraform-datadog-aws-integration?ref=x.y.z"
 
-  # Should correspond to the name of the service in Datadog. Lowercase.
+  # Should correspond to the name of the team in Datadog. Lowercase.
   team_name   = "stasjon"
   environment = var.environment
 }

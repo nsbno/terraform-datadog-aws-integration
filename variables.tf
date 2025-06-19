@@ -17,11 +17,3 @@ variable "metrics_to_include" {
 
   default = []
 }
-
-
-variable "xray_include_all" {
-  type        = bool
-  description = "If true, all X-Ray traces will be included in the Datadog integration. If false, only traces from the specified services will be included."
-
-  default = false
-}

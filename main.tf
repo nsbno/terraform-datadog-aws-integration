@@ -309,7 +309,7 @@ resource "datadog_integration_aws_account" "this" {
 
   traces_config {
     xray_services {
-      include_all = var.xray_include_all
+      include_all = true
     }
   }
 }

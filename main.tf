@@ -263,6 +263,7 @@ resource "datadog_integration_aws_external_id" "this" {}
 
 data "aws_iam_account_alias" "this" {}
 
+
 resource "datadog_integration_aws_account" "this" {
   account_tags = [
     "team:${var.team_name}",
@@ -296,7 +297,9 @@ resource "datadog_integration_aws_account" "this" {
     collect_cloudwatch_alarms = false
     collect_custom_metrics    = false
 
-    namespace_filters {}
+    namespace_filters {
+	  include_only = var.metrics_to_include
+	}
   }
 
   resources_config {
@@ -306,7 +309,7 @@ resource "datadog_integration_aws_account" "this" {
 
   traces_config {
     xray_services {
-      include_all = true
+      include_all = var.xray_include_all
     }
   }
 }

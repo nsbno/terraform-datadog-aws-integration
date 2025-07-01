@@ -17,3 +17,15 @@ variable "metrics_to_include" {
 
   default = []
 }
+
+variable "enable_cloudwatch_alarms" {
+  type        = bool
+  description = "Whether to collect CloudWatch alarms for the Datadog integration."
+  default     = false
+}
+
+variable "enable_custom_metrics" {
+  type        = bool
+  description = "Whether to collect custom metrics for the Datadog integration."
+  default     = false
+}

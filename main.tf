@@ -294,8 +294,8 @@ resource "datadog_integration_aws_account" "this" {
     enabled          = true
     automute_enabled = true
 
-    collect_cloudwatch_alarms = false
-    collect_custom_metrics    = false
+    collect_cloudwatch_alarms = var.enable_cloudwatch_alarms
+    collect_custom_metrics    = var.enable_custom_metrics
 
     namespace_filters {
 	  include_only = var.metrics_to_include

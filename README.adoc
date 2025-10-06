@@ -25,6 +25,20 @@ module "datadog-service" {
   environment = var.environment
 }
 ----
+=== Example with metrics to include
+
+[source, hcl]
+----
+module "datadog-service" {
+  source = "github.com/nsbno/terraform-datadog-aws-integration?ref=x.y.z"
+
+  # Should correspond to the name of the team in Datadog. Lowercase.
+  team_name   = aws_ssm_parameter.team_name_handle.value
+  environment = var.environment
+
+  metrics_to_include = ["AWS/Lambda", "AWS/ECS"]
+}
+----
 
 == Relevant Repositories
 

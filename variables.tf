@@ -18,6 +18,24 @@ variable "metrics_to_include" {
   default = []
 }
 
+variable "metrics_to_stream" {
+  type = map(object({
+    metric_names = optional(list(string), [])
+  }))
+  description = "Which metric namespaces, and optionally, specific metrics to include in the stream. If empty, no metrics are included"
+  default     = {
+    // Include AWS/SQS by default, as it's monitored by many teams
+    "AWS/SQS" = {}
+  }
+}
+
+variable "datadog_api_key" {
+  type        = string
+  description = "Datadog API key for the metric stream"
+  sensitive   = true
+  default = null
+}
+
 variable "enable_cloudwatch_alarms" {
   type        = bool
   description = "Whether to collect CloudWatch alarms for the Datadog integration."

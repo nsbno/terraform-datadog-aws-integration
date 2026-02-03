@@ -298,8 +298,8 @@ resource "datadog_integration_aws_account" "this" {
     collect_custom_metrics    = var.enable_custom_metrics
 
     namespace_filters {
-	  include_only = var.metrics_to_include
-	}
+      include_only = var.metrics_to_include
+    }
   }
 
   resources_config {
@@ -312,4 +312,18 @@ resource "datadog_integration_aws_account" "this" {
       include_all = true
     }
   }
+}
+
+# resource "datadog_api_key" "datadog_metric_streaming" {
+#   count = length(var.metrics_to_stream) > 0 ? 1 : 0
+#
+#   name = "cloudwatch-metric-stream-${var.environment}-${data.aws_iam_account_alias.this.account_alias}"
+# }
+
+module "metric_stream" {
+  count  = length(var.metrics_to_stream) > 0 ? 1 : 0
+  source = "./modules/metric_stream"
+
+  datadog_api_key    = var.datadog_api_key
+  include_namespaces = var.metrics_to_stream
 }

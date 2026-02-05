@@ -23,11 +23,11 @@ variable "metrics_to_stream" {
     metric_names = optional(list(string), [])
   }))
   description = "Which metric namespaces, and optionally, specific metrics to include in the stream. If empty, no metrics are included"
-  default     = {
+  default = {
     // Default to the namespaces we know most people monitor on
-    "AWS/SQS" = {},
+    "AWS/SQS"            = {},
     "AWS/ApplicationELB" = {},
-    "AWS/ECS" = {}
+    "AWS/ECS"            = {}
   }
 }
 

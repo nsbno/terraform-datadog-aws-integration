@@ -24,16 +24,11 @@ variable "metrics_to_stream" {
   }))
   description = "Which metric namespaces, and optionally, specific metrics to include in the stream. If empty, no metrics are included"
   default     = {
-    // Include AWS/SQS by default, as it's monitored by many teams
-    "AWS/SQS" = {}
+    // Default to the namespaces we know most people monitor on
+    "AWS/SQS" = {},
+    "AWS/ApplicationELB" = {},
+    "AWS/ECS" = {}
   }
-}
-
-variable "datadog_api_key" {
-  type        = string
-  description = "Datadog API key for the metric stream"
-  sensitive   = true
-  default = null
 }
 
 variable "enable_cloudwatch_alarms" {

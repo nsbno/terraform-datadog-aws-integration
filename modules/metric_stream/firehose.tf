@@ -7,11 +7,22 @@ resource "aws_s3_bucket" "backup" {
   force_destroy = true
 }
 
-resource "aws_s3_bucket_public_access_block" "backup" {
+// trivy:ignore:AVD-AWS-0132 # We have no strong need for KMS key to encrypt this bucket
+resource "aws_s3_bucket_server_side_encryption_configuration" "backup" {
   bucket = aws_s3_bucket.backup.bucket
-  block_public_acls = true
-  block_public_policy = true
-  ignore_public_acls = true
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "backup" {
+  bucket                  = aws_s3_bucket.backup.bucket
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
   restrict_public_buckets = true
 }
 

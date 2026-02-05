@@ -5,7 +5,7 @@ data "aws_iam_policy_document" "assume_role" {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = ["464622532012"]
     }
 

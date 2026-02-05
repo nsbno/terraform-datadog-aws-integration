@@ -3,8 +3,8 @@ locals {
 }
 
 resource "aws_iam_role" "metric_streams_to_firehose" {
-  path               = "/__platform__/"
-  name               = "datadog-metric-stream-to-firehose"
+  path = "/__platform__/"
+  name = "datadog-metric-stream-to-firehose"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

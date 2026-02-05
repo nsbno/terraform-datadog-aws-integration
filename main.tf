@@ -314,16 +314,21 @@ resource "datadog_integration_aws_account" "this" {
   }
 }
 
-# resource "datadog_api_key" "datadog_metric_streaming" {
-#   count = length(var.metrics_to_stream) > 0 ? 1 : 0
-#
-#   name = "cloudwatch-metric-stream-${var.environment}-${data.aws_iam_account_alias.this.account_alias}"
-# }
+data "aws_secretsmanager_secret" "metric_stream_datadog" {
+  // Managed through observability-service
+  // https://github.com/nsbno/observability-service/blob/main/services/datadog-api-setup/infrastructure/datadog_metric_stream_secret.tf
+  // Hardcoded value, because the ARN is the same for all environments
+  arn = "arn:aws:secretsmanager:eu-west-1:727646359971:secret:datadog_metric_stream_api_key-Bpx7YF"
+}
+
+data "aws_secretsmanager_secret_version" "metric_stream_datadog" {
+  secret_id = data.aws_secretsmanager_secret.metric_stream_datadog.id
+}
 
 module "metric_stream" {
   count  = length(var.metrics_to_stream) > 0 ? 1 : 0
   source = "./modules/metric_stream"
 
-  datadog_api_key    = var.datadog_api_key
+  datadog_api_key    = data.aws_secretsmanager_secret_version.metric_stream_datadog.secret_string
   include_namespaces = var.metrics_to_stream
 }

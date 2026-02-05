@@ -69,7 +69,7 @@ resource "aws_kinesis_firehose_delivery_stream" "datadog_metric_stream" {
     buffering_interval = 60
     retry_duration     = 60
     s3_backup_mode     = "FailedDataOnly"
-    role_arn = aws_iam_role.firehose_to_s3.arn
+    role_arn           = aws_iam_role.firehose_to_s3.arn
 
     request_configuration {
       content_encoding = "GZIP"

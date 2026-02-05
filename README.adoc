@@ -40,6 +40,33 @@ module "datadog-service" {
 }
 ----
 
+=== Example with Metric streaming
+
+Useful when you need quicker insight into certain metrics,
+for example with high-criticality alerts.
+
+[source, hcl]
+----
+module "datadog-service" {
+  source = "github.com/nsbno/terraform-datadog-aws-integration?ref=x.y.z"
+
+  # Should correspond to the name of the team in Datadog. Lowercase.
+  team_name   = aws_ssm_parameter.team_name_handle.value
+  environment = var.environment
+
+  # Metric Namespace that should be streamed
+  metrics_to_stream = {
+    # Will stream all SQS metrics
+    "AWS/SQS" = {},
+
+    "AWS/ApplicationELB" = {
+      # Only streams the specified metrics under ApplicationELB
+      metric_names = ["HealthyHostCount"]
+    },
+  }
+}
+----
+
 == Relevant Repositories
 
 You can use these repos together with this repo!

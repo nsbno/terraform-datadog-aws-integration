@@ -1,3 +1,33 @@
+locals {
+  // Default to the namespaces we know most people monitor on.
+  // Add more if we have missed some key monitors
+  default_namespaces = ["AWS/SQS", "AWS/ApplicationELB", "AWS/ApiGateway", "AWS/ECS"]
+
+  // Ugly expression, but wasn't easy to make it pretty
+  // 1. When metrics_to_include != null => Always use that
+  // 2. When metrics_to_include == null AND environment IS production => Include any popular namespaces
+  // 3. When metrics_to_include == null AND environment IS NOT production => Don't include any metrics, to save cost
+  metrics_to_include = var.metrics_to_include == null ? (lower(var.environment) == "prod" ? local.default_namespaces : []) : var.metrics_to_include
+
+
+  // Used later, to select only the default_namespaces that is also mentioned in metrics_to_include
+  default_namespaces_intersected_with_metrics_to_include = tolist(setintersection(toset(local.default_namespaces), toset(local.metrics_to_include)))
+
+  //
+  // 1. When var.metrics_to_include IS NOT null => Use the intersection between local.metrics_to_include and default_namespaces,
+  //                                               to avoid streaming more metrics than strictly necessary but still including those we consider to be important for alerting
+  //
+  // 2. Otherwise => Include all in default_namespace
+  default_namespaces_to_stream = { for ns in(var.metrics_to_include != null ? local.default_namespaces_intersected_with_metrics_to_include : local.default_namespaces) : ns => {} }
+
+  // Also ugly
+  // 1. When metrics_to_stream != null => Always use that so the user can override any value
+  // 2. When metrics_to_stream == null AND environment IS production AND local.metrics_to_include IS provided => Include the intersection of default_namespace and metrics_to_include
+  // 3. When metrics_to_stream == null AND environment IS production AND local.metrics_to_include IS NOT provided => Include all namespaces that are commonly used for Alerts
+  // 3. When metrics_to_stream == null AND environment IS NOT production => Don't stream anything to save cost
+  metrics_to_stream = var.metrics_to_stream == null ? (lower(var.environment) == "prod" ? local.default_namespaces_to_stream : {}) : var.metrics_to_stream
+}
+
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "assume_role" {
@@ -268,8 +298,7 @@ resource "datadog_integration_aws_account" "this" {
   account_tags = [
     "team:${var.team_name}",
     "env:${var.environment}",
-    "account-name:${data.aws_iam_account_alias.this.account_alias}"
-
+    "account-name:${data.aws_iam_account_alias.this.account_alias}",
   ]
 
   aws_account_id = data.aws_caller_identity.current.account_id
@@ -298,7 +327,7 @@ resource "datadog_integration_aws_account" "this" {
     collect_custom_metrics    = var.enable_custom_metrics
 
     namespace_filters {
-      include_only = var.metrics_to_include
+      include_only = local.metrics_to_include
     }
   }
 
@@ -326,9 +355,9 @@ data "aws_secretsmanager_secret_version" "metric_stream_datadog" {
 }
 
 module "metric_stream" {
-  count  = length(var.metrics_to_stream) > 0 ? 1 : 0
+  count  = length(local.metrics_to_stream) > 0 ? 1 : 0
   source = "./modules/metric_stream"
 
   datadog_api_key    = data.aws_secretsmanager_secret_version.metric_stream_datadog.secret_string
-  include_namespaces = var.metrics_to_stream
+  include_namespaces = local.metrics_to_stream
 }

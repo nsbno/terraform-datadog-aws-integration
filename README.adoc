@@ -12,7 +12,6 @@ toc::[]
 
 NOTE: Requires link:https://github.com/nsbno/terraform-datadog-provider-setup[`nsbno/terraform-datadog-provider`] module to be set up.
 
-
 Place this module in all environments in your `-aws` repository, and you will be good to go!
 
 [source, hcl]
@@ -25,7 +24,14 @@ module "datadog-service" {
   environment = var.environment
 }
 ----
-=== Example with metrics to include
+
+More examples: link:examples/[`examples/`]
+
+=== Example with custom metrics to include
+
+By default, a subset of metrics will be included in production environments.
+That way, all accounts doesn't need to consider what metrics to include.
+Unless you have specific use cases
 
 [source, hcl]
 ----
@@ -47,7 +53,7 @@ for example with high-criticality alerts.
 
 [source, hcl]
 ----
-module "datadog-service" {
+module "datadog_aws_integration" {
   source = "github.com/nsbno/terraform-datadog-aws-integration?ref=x.y.z"
 
   # Should correspond to the name of the team in Datadog. Lowercase.
@@ -73,4 +79,26 @@ You can use these repos together with this repo!
 
 link:https://github.com/nsbno/terraform-datadog-provider-setup[`nsbno/terraform-datadog-provider`]::
 Set up a DataDog provider before using this module.
+
+
+== Enable faster delivery of CloudWatch Metrics to DataDog
+
+We _generally recommend to mainly work with_ `metrics_to_include`,
+which determines what metrics are exported to DataDog at all,
+and is the cheapest alternative.
+
+**However**, if you experience that DataDog Monitors take way longer than expected to trigger,
+you may want to enable Metrics Streaming for those metrics, using variable `metrics_to_stream`.
+As demonstrated in the examples above.
+
+By default, we will enable streaming of Metrics that is commonly used for alerting.
+Such as SQS or Application Load Balancer, in production only.
+There is a cost to streaming metrics, versus simply letting DataDog poll for new data.
+So we're trying to find a balance between convenience and cost.
+
+You can always specify the metrics yourself in `metrics_to_stream`, when
+you need to have a metric delivered faster to DataDog.
+Just remember that each metric adds additional cost to your account.
+For most metrics it should suffice to only include them in `metrics_to_include`.
+
 

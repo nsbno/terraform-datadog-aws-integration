@@ -13,22 +13,18 @@ variable "environment" {
 
 variable "metrics_to_include" {
   type        = list(string)
-  description = "Metrics to include in the Datadog integration. If empty, all metrics will be included. Check Datadog Metric Collection page for available namespaces."
-
-  default = []
+  description = "Metrics to include in the Datadog integration. If empty, no metrics will be included. Defaults to include the most common namespaces in production. Check Datadog Metric Collection page for available namespaces."
+  nullable    = true
+  default     = null
 }
 
 variable "metrics_to_stream" {
   type = map(object({
     metric_names = optional(list(string), [])
   }))
-  description = "Which metric namespaces, and optionally, specific metrics to include in the stream. If empty, no metrics are included"
-  default = {
-    // Default to the namespaces we know most people monitor on
-    "AWS/SQS"            = {},
-    "AWS/ApplicationELB" = {},
-    "AWS/ECS"            = {}
-  }
+  description = "Which metrics you want streamed. Specify the namespace, and optionally, specific metrics to include. Remember to also include value in metrics_to_include. Defaults to only stream in production, and the most relevant namespaces for alerting."
+  nullable    = true
+  default     = null
 }
 
 variable "enable_cloudwatch_alarms" {

@@ -38,3 +38,15 @@ variable "enable_custom_metrics" {
   description = "Whether to collect custom metrics for the Datadog integration."
   default     = false
 }
+
+variable "enable_resource_collection" {
+  type = bool
+  description = "Resource collection is used to gather information about the AWS account. May increase cost"
+  default = true
+}
+
+variable "enable_cloud_security" {
+  type = bool
+  description = "Enable Cloud Security Management to scan AWS resources for vulnerabilities, misconfigurations, identity risks, and compliance violations. May incur additional cost"
+  default = false
+}

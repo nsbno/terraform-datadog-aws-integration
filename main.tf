@@ -403,30 +403,3 @@ module "metric_stream" {
   datadog_api_key    = data.aws_secretsmanager_secret_version.metric_stream_datadog.secret_string
   include_namespaces = local.metrics_to_stream
 }
-
-//
-// Restrict who can edit and view the AWS integration
-// Currently there are no restrictions, meaning everyone has access to clickops
-// whatever they want. Even for accounts they don't own. We don't want that.
-//
-
-data "datadog_team" "utviklerplattform" {
-  // This team should always have editor access
-  filter_keyword = "utviklerplattform"
-}
-
-data "datadog_team" "product_team" {
-  // This team is the owner of the AWS Account and its product
-  filter_keyword = var.team_name
-}
-
-resource "datadog_restriction_policy" "restrict_editors" {
-  resource_id = "integration-aws-account:${datadog_integration_aws_account.this.id}"
-  bindings {
-    principals = toset([
-      "team:${data.datadog_team.utviklerplattform.id}",
-      "team:${data.datadog_team.product_team.id}",
-    ])
-    relation = "editor"
-  }
-}

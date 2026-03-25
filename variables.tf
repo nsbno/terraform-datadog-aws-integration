@@ -1,5 +1,5 @@
 variable "team_name" {
-  type = string
+  type        = string
   description = "The team handle in DataDog. Make sure that this team exists beforehand"
 }
 
@@ -41,7 +41,7 @@ variable "enable_custom_metrics" {
 }
 
 variable "enable_cloud_security" {
-  type = bool
+  type        = bool
   description = "Enable Cloud Security Management to scan AWS resources for vulnerabilities, misconfigurations, identity risks, and compliance violations. May incur additional cost"
-  default = false
+  default     = false
 }

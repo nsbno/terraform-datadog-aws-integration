@@ -1,5 +1,6 @@
 variable "team_name" {
   type = string
+  description = "The team handle in DataDog. Make sure that this team exists beforehand"
 }
 
 variable "environment" {
